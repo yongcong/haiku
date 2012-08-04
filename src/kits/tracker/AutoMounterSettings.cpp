@@ -32,6 +32,7 @@ names are registered trademarks or trademarks of their respective holders.
 All rights reserved.
 */
 
+
 #include "AutoMounterSettings.h"
 
 #include <Alert.h>
@@ -118,7 +119,8 @@ AutomountSettingsPanel::AutomountSettingsPanel(BMessage* settings,
 		new BMessage(kAutomountSettingsChanged));
 
 	fAutoMountAllBFSCheck = new BRadioButton("autoBFS",
-		B_TRANSLATE("All BeOS disks"), new BMessage(kAutomountSettingsChanged));
+		B_TRANSLATE("All BeOS disks"),
+			new BMessage(kAutomountSettingsChanged));
 
 	fAutoMountAllCheck = new BRadioButton("autoAll",
 		B_TRANSLATE("All disks"), new BMessage(kAutomountSettingsChanged));
@@ -342,4 +344,3 @@ AutomountSettingsDialog::RunAutomountSettings(const BMessenger& target)
 
 	(new AutomountSettingsDialog(&reply, target))->Show();
 }
-

@@ -532,9 +532,9 @@ HAIKU_BUILD_DESCRIPTION ?= "Unknown Build" ;
 # init library name map
 {
 	local i ;
-	for i in be bnetapi debug game GL locale mail media midi midi2 network
-			opengl package root screensaver textencoding tracker translation
-			z {
+	for i in be bnetapi debug device game GL locale mail media midi midi2
+			network opengl package root screensaver textencoding tracker
+			translation z {
 		HAIKU_LIBRARY_NAME_MAP_$(i) = lib$(i).so ;
 	}
 	HAIKU_LIBRARY_NAME_MAP_libstdc++ = $(HAIKU_LIBSTDC++) ;
@@ -607,6 +607,13 @@ if $(HOST_PLATFORM) = linux || $(HOST_PLATFORM) = freebsd
 	if $(LEX) = lex {
 		LEX = flex ;
 	}
+}
+
+# On recent versions of OS X cc and c++ point to clang, which fails to
+# compile some of the host tools. As a workaround, force use of GCC.
+if $(HOST_PLATFORM) = darwin {
+	HOST_CC = gcc ;
+	HOST_C++ = g++ ;
 }
 
 if $(HOST_PLATFORM) = cygwin {

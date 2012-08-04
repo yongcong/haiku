@@ -86,7 +86,7 @@ public:
 
 
 namespace BPrivate {
-BStatusWindow *gStatusWindow = NULL;
+BStatusWindow* gStatusWindow = NULL;
 }
 
 
@@ -246,7 +246,7 @@ BStatusWindow::CreateStatusItem(thread_id thread, StatusWindowState type)
 		AutoLock<BLooper> lock(be_app);
 		int32 count = be_app->CountWindows();
 		for (int32 index = 0; index < count; index++) {
-			if (dynamic_cast<BDeskWindow *>(be_app->WindowAt(index))
+			if (dynamic_cast<BDeskWindow*>(be_app->WindowAt(index))
 				&& be_app->WindowAt(index)->IsActive()) {
 				desktopActive = true;
 				break;
@@ -315,8 +315,8 @@ BStatusWindow::RemoveStatusItem(thread_id thread)
 	}
 
 	if (winner != NULL) {
-		// The height by which the other views will have to be moved (in pixel
-		// count).
+		// The height by which the other views will have to be moved
+		// (in pixel count).
 		float height = winner->Bounds().Height() + 1;
 		fViewList.RemoveItem(winner);
 		winner->RemoveSelf();
@@ -460,7 +460,8 @@ BStatusView::BStatusView(BRect bounds, thread_id thread, StatusWindowState type)
 			break;
 
 		case kCreateLinkState:
-			caption = B_TRANSLATE("Preparing to create links" B_UTF8_ELLIPSIS);
+			caption = B_TRANSLATE("Preparing to create links"
+				B_UTF8_ELLIPSIS);
 			id = R_MoveStatusBitmap;
 			break;
 
@@ -470,16 +471,19 @@ BStatusView::BStatusView(BRect bounds, thread_id thread, StatusWindowState type)
 			break;
 
 		case kVolumeState:
-			caption = B_TRANSLATE("Searching for disks to mount" B_UTF8_ELLIPSIS);
+			caption = B_TRANSLATE("Searching for disks to mount"
+				B_UTF8_ELLIPSIS);
 			break;
 
 		case kDeleteState:
-			caption = B_TRANSLATE("Preparing to delete items" B_UTF8_ELLIPSIS);
+			caption = B_TRANSLATE("Preparing to delete items"
+				B_UTF8_ELLIPSIS);
 			id = R_TrashStatusBitmap;
 			break;
 
 		case kRestoreFromTrashState:
-			caption = B_TRANSLATE("Preparing to restore items" B_UTF8_ELLIPSIS);
+			caption = B_TRANSLATE("Preparing to restore items"
+				B_UTF8_ELLIPSIS);
 			break;
 
 		default:
@@ -506,8 +510,10 @@ BStatusView::BStatusView(BRect bounds, thread_id thread, StatusWindowState type)
 			+ fh.descent + f.top);
 	}
 
-	if (id != 0)
-	 	GetTrackerResources()->GetBitmapResource(B_MESSAGE_TYPE, id, &fBitmap);
+	if (id != 0) {
+		GetTrackerResources()->GetBitmapResource(B_MESSAGE_TYPE, id,
+			&fBitmap);
+	}
 
 	rect = Bounds();
 	rect.left = rect.right - buttonWidth * 2 - 7;
@@ -550,8 +556,8 @@ BStatusView::Init()
 	fLastSpeedReferenceSize = 0;
 	fEstimatedFinishReferenceSize = 0;
 
-	fProcessStartTime = fLastSpeedReferenceTime = fEstimatedFinishReferenceTime
-		= system_time();
+	fProcessStartTime = fLastSpeedReferenceTime
+		= fEstimatedFinishReferenceTime = system_time();
 }
 
 
@@ -580,11 +586,12 @@ BStatusView::InitStatus(int32 totalItems, off_t totalSize,
 
 	switch (fType) {
 		case kCopyState:
-			fStatusBar->Reset(B_TRANSLATE("Copying: "),	buffer.String());
+			fStatusBar->Reset(B_TRANSLATE("Copying: "), buffer.String());
 			break;
 
 		case kCreateLinkState:
-			fStatusBar->Reset(B_TRANSLATE("Creating links: "), buffer.String());
+			fStatusBar->Reset(B_TRANSLATE("Creating links: "),
+				buffer.String());
 			break;
 
 		case kMoveState:
@@ -592,7 +599,8 @@ BStatusView::InitStatus(int32 totalItems, off_t totalSize,
 			break;
 
 		case kTrashState:
-			fStatusBar->Reset(B_TRANSLATE("Emptying Trash" B_UTF8_ELLIPSIS " "),
+			fStatusBar->Reset(
+				B_TRANSLATE("Emptying Trash" B_UTF8_ELLIPSIS " "),
 				buffer.String());
 			break;
 
@@ -619,7 +627,8 @@ BStatusView::Draw(BRect updateRect)
 {
 	if (fBitmap) {
 		BPoint location;
-		location.x = (fStatusBar->Frame().left - fBitmap->Bounds().Width()) / 2;
+		location.x = (fStatusBar->Frame().left
+			- fBitmap->Bounds().Width()) / 2;
 		location.y = (Bounds().Height()- fBitmap->Bounds().Height()) / 2;
 		DrawBitmap(fBitmap, location);
 	}
@@ -695,7 +704,8 @@ BStatusView::_DestinationString(float* _width)
 
 
 BString
-BStatusView::_StatusString(float availableSpace, float fontSize, float* _width)
+BStatusView::_StatusString(float availableSpace, float fontSize,
+	float* _width)
 {
 	BFont font;
 	GetFont(&font);
@@ -842,7 +852,7 @@ BStatusView::AttachedToWindow()
 
 
 void
-BStatusView::MessageReceived(BMessage *message)
+BStatusView::MessageReceived(BMessage* message)
 {
 	switch (message->what) {
 		case kPauseButton:
@@ -888,7 +898,7 @@ BStatusView::MessageReceived(BMessage *message)
 
 
 void
-BStatusView::UpdateStatus(const char *curItem, off_t itemSize, bool optional)
+BStatusView::UpdateStatus(const char* curItem, off_t itemSize, bool optional)
 {
 	if (!fShowCount) {
 		fStatusBar->Update((float)fItemSize / fTotalSize);
@@ -911,7 +921,7 @@ BStatusView::UpdateStatus(const char *curItem, off_t itemSize, bool optional)
 			buffer <<  fCurItem << " ";
 
 			// if we don't have curItem, take the one from the stash
-			const char *statusItem = curItem != NULL
+			const char* statusItem = curItem != NULL
 				? curItem : fPendingStatusString;
 
 			fStatusBar->Update((float)fItemSize / fTotalSize, statusItem,
@@ -970,4 +980,3 @@ BStatusView::SetWasCanceled()
 {
 	fWasCanceled = true;
 }
-

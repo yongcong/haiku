@@ -1699,9 +1699,11 @@ BlockAllocator::CheckBlocks(off_t start, off_t length, bool allocated)
 	if (start < 0 || start + length > fVolume->NumBlocks())
 		return B_BAD_VALUE;
 
-	uint32 group = start >> fVolume->AllocationGroupShift();
-	uint32 groupBlock = start / (fVolume->BlockSize() << 3);
-	uint32 blockOffset = start % fVolume->BlockSize();
+	int32 group = start >> fVolume->AllocationGroupShift();
+	uint32 bitmapBlock = start / (fVolume->BlockSize() << 3);
+	uint32 blockOffset = start % (fVolume->BlockSize() << 3);
+
+	uint32 groupBlock = bitmapBlock % fBlocksPerGroup;
 
 	AllocationBlock cached(fVolume);
 
@@ -1988,8 +1990,9 @@ BlockAllocator::_CheckInodeBlocks(Inode* inode, const char* name)
 			if (status != B_OK)
 				return status;
 
-			int32 maxIndex = (indirect.Length() << fVolume->BlockShift())
-				/ sizeof(block_run);
+			int32 maxIndex
+				= ((uint32)indirect.Length() << fVolume->BlockShift())
+					/ sizeof(block_run);
 
 			for (int32 index = 0; index < maxIndex; ) {
 				block_run* runs = (block_run*)cachedDirect.SetTo(

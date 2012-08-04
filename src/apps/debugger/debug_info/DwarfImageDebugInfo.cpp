@@ -1,5 +1,6 @@
 /*
  * Copyright 2009, Ingo Weinhold, ingo_weinhold@gmx.de.
+ * Copyright 2012, Rene Gollent, rene@gollent.com.
  * Distributed under the terms of the MIT License.
  */
 
@@ -556,6 +557,7 @@ DwarfImageDebugInfo::CreateFrame(Image* image,
 	CompilationUnit* unit = function->GetCompilationUnit();
 	error = fFile->UnwindCallFrame(unit, function->SubprogramEntry(),
 		instructionPointer, inputInterface, outputInterface, framePointer);
+
 	if (error != B_OK) {
 		TRACE_CFI("Failed to unwind call frame: %s\n", strerror(error));
 		return B_UNSUPPORTED;
@@ -691,10 +693,12 @@ DwarfImageDebugInfo::GetStatement(FunctionDebugInfo* _function,
 	int32 statementLine = -1;
 	int32 statementColumn = -1;
 	while (program.GetNextRow(state)) {
-		bool isOurFile = state.file == fileIndex;
+		// skip statements of other files
+		if (state.file != fileIndex)
+			continue;
 
 		if (statementAddress != 0
-			&& (!isOurFile || state.isStatement || state.isSequenceEnd)) {
+			&& (state.isStatement || state.isSequenceEnd)) {
 			target_addr_t endAddress = state.address;
 			if (address >= statementAddress && address < endAddress) {
 				ContiguousStatement* statement = new(std::nothrow)
@@ -711,10 +715,6 @@ DwarfImageDebugInfo::GetStatement(FunctionDebugInfo* _function,
 
 			statementAddress = 0;
 		}
-
-		// skip statements of other files
-		if (!isOurFile)
-			continue;
 
 		if (state.isStatement) {
 			statementAddress = state.address;

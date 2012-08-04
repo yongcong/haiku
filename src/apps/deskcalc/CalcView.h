@@ -4,18 +4,22 @@
  * Distributed under the terms of the MIT License.
  *
  * Authors:
- *		Timothy Wayper <timmy@wunderbear.com>
  *		Stephan Aßmus <superstippi@gmx.de>
+ *		John Scipione <jscipione@gmail.com>
+ *		Timothy Wayper <timmy@wunderbear.com>
  */
-
 #ifndef _CALC_VIEW_H
 #define _CALC_VIEW_H
 
+
 #include <View.h>
+
 
 enum {
 	MSG_OPTIONS_AUTO_NUM_LOCK				= 'oanl',
 	MSG_OPTIONS_AUDIO_FEEDBACK				= 'oafb',
+	MSG_OPTIONS_ANGLE_MODE_RADIAN			= 'oamr',
+	MSG_OPTIONS_ANGLE_MODE_DEGREE			= 'oamd',
 	MSG_OPTIONS_KEYPAD_MODE_COMPACT			= 'okmc',
 	MSG_OPTIONS_KEYPAD_MODE_BASIC			= 'okmb',
 	MSG_OPTIONS_KEYPAD_MODE_SCIENTIFIC		= 'okms',
@@ -90,6 +94,9 @@ class CalcView : public BView {
 			// (option currently disabled)
 			void				ToggleAudioFeedback(void);
 
+			// Set the angle mode to degrees or radians
+			void				SetDegreeMode(bool degrees);
+
 			// Set the keypad mode
 			void				SetKeypadMode(uint8 mode);
 
@@ -147,6 +154,10 @@ class CalcView : public BView {
 			BPopUpMenu*			fPopUpMenu;
 			BMenuItem*			fAutoNumlockItem;
 			BMenuItem*			fAudioFeedbackItem;
+
+			BMenuItem*			fAngleModeRadianItem;
+			BMenuItem*			fAngleModeDegreeItem;
+
 			BMenuItem*			fKeypadModeCompactItem;
 			BMenuItem*			fKeypadModeBasicItem;
 			BMenuItem*			fKeypadModeScientificItem;

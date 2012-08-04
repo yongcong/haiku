@@ -1,12 +1,14 @@
 /*
- * Copyright 2006-2011 Haiku, Inc. All Rights Reserved.
+ * Copyright 2006-2012 Haiku, Inc. All Rights Reserved.
  * Copyright 1997, 1998 R3 Software Ltd. All Rights Reserved.
  * Distributed under the terms of the MIT License.
  *
  * Authors:
- *		Timothy Wayper <timmy@wunderbear.com>
  *		Stephan Aßmus <superstippi@gmx.de>
+ *		John Scipione <jscipione@gmail.com>
+ *		Timothy Wayper <timmy@wunderbear.com>
  */
+
 
 #include "CalcWindow.h"
 
@@ -87,6 +89,14 @@ CalcWindow::MessageReceived(BMessage* message)
 		case MSG_OPTIONS_AUDIO_FEEDBACK:
 			fCalcView->ToggleAudioFeedback();
 			break;
+
+		case MSG_OPTIONS_ANGLE_MODE_RADIAN:
+			fCalcView->SetDegreeMode(false);
+			return;
+
+		case MSG_OPTIONS_ANGLE_MODE_DEGREE:
+			fCalcView->SetDegreeMode(true);
+			return;
 
 		case MSG_OPTIONS_KEYPAD_MODE_COMPACT:
 			fCalcView->SetKeypadMode(KEYPAD_MODE_COMPACT);

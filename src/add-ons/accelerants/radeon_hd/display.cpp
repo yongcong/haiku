@@ -113,16 +113,16 @@ init_registers(register_info* regs, uint8 crtcID)
 
 		switch (crtcID) {
 			case 0:
-				offset = R600_CRTC0_REGISTER_OFFSET;
+				offset = R700_CRTC0_REGISTER_OFFSET;
 				regs->vgaControl = AVIVO_D1VGA_CONTROL;
 				regs->grphPrimarySurfaceAddrHigh
-					= D1GRPH_PRIMARY_SURFACE_ADDRESS_HIGH;
+					= R700_D1GRPH_PRIMARY_SURFACE_ADDRESS_HIGH;
 				break;
 			case 1:
-				offset = R600_CRTC1_REGISTER_OFFSET;
+				offset = R700_CRTC1_REGISTER_OFFSET;
 				regs->vgaControl = AVIVO_D2VGA_CONTROL;
 				regs->grphPrimarySurfaceAddrHigh
-					= D2GRPH_PRIMARY_SURFACE_ADDRESS_HIGH;
+					= R700_D2GRPH_PRIMARY_SURFACE_ADDRESS_HIGH;
 				break;
 			default:
 				ERROR("%s: Unknown CRTC %" B_PRIu32 "\n",
@@ -134,12 +134,12 @@ init_registers(register_info* regs, uint8 crtcID)
 
 		regs->grphEnable = AVIVO_D1GRPH_ENABLE + offset;
 		regs->grphControl = AVIVO_D1GRPH_CONTROL + offset;
-		regs->grphSwapControl = D1GRPH_SWAP_CNTL + offset;
+		regs->grphSwapControl = AVIVO_D1GRPH_SWAP_CNTL + offset;
 
 		regs->grphPrimarySurfaceAddr
-			= D1GRPH_PRIMARY_SURFACE_ADDRESS + offset;
+			= R700_D1GRPH_PRIMARY_SURFACE_ADDRESS + offset;
 		regs->grphSecondarySurfaceAddr
-			= D1GRPH_SECONDARY_SURFACE_ADDRESS + offset;
+			= R700_D1GRPH_SECONDARY_SURFACE_ADDRESS + offset;
 
 		regs->grphPitch = AVIVO_D1GRPH_PITCH + offset;
 		regs->grphSurfaceOffsetX = AVIVO_D1GRPH_SURFACE_OFFSET_X + offset;
@@ -177,12 +177,12 @@ init_registers(register_info* regs, uint8 crtcID)
 
 		regs->grphEnable = AVIVO_D1GRPH_ENABLE + offset;
 		regs->grphControl = AVIVO_D1GRPH_CONTROL + offset;
-		regs->grphSwapControl = D1GRPH_SWAP_CNTL + offset;
+		regs->grphSwapControl = AVIVO_D1GRPH_SWAP_CNTL + offset;
 
 		regs->grphPrimarySurfaceAddr
-			= D1GRPH_PRIMARY_SURFACE_ADDRESS + offset;
+			= AVIVO_D1GRPH_PRIMARY_SURFACE_ADDRESS + offset;
 		regs->grphSecondarySurfaceAddr
-			= D1GRPH_SECONDARY_SURFACE_ADDRESS + offset;
+			= AVIVO_D1GRPH_SECONDARY_SURFACE_ADDRESS + offset;
 
 		// Surface Address high only used on r700 and higher
 		regs->grphPrimarySurfaceAddrHigh = 0xDEAD;
@@ -257,6 +257,12 @@ detect_displays()
 		if (displayIndex >= MAX_DISPLAY)
 			continue;
 
+		if (gConnector[id]->type == VIDEO_CONNECTOR_9DIN) {
+			TRACE("%s: Skipping 9DIN connector (not yet supported)\n",
+				__func__);
+			continue;
+		}
+
 		// TODO: As DP aux transactions don't work yet, just use LVDS as a hack
 		#if 0
 		if (gConnector[id]->encoderExternal.isDPBridge == true) {
@@ -310,9 +316,11 @@ detect_displays()
 					TRACE("%s: connector %" B_PRIu32 " has digital EDID "
 						"and is not a analog encoder.\n", __func__, id);
 				} else {
-					// ???, shouldn't happen... I think.
-					TRACE("%s: Warning: connector %" B_PRIu32 " has neither "
-						"digital EDID nor is an analog encoder?\n",
+					// This generally means the monitor is of poor design
+					// Since we *know* there is no load on the analog encoder
+					// we assume that it is a digital display.
+					TRACE("%s: Warning: monitor on connector %" B_PRIu32 " has "
+						"false digital EDID flag and unloaded analog encoder!\n",
 						__func__, id);
 				}
 			}
