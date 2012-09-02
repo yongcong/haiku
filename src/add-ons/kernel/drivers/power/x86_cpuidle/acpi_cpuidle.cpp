@@ -502,6 +502,9 @@ acpi_cpuidle_support(device_node *parent)
 		return 0.0;
 	}
 
+	if (!x86_check_feature(IA32_FEATURE_ARAT, FEATURE_6_ECX))
+		return 0.0;
+
 	return 0.6;
 }
 
